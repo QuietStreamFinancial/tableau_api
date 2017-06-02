@@ -38,6 +38,24 @@ describe TableauApi::Resources::Users, vcr: { cassette_name: 'users' } do
       expect(user_after_change['siteRole']).to eq('Publisher')
     end
 
+    it 'can change the password of a user in a site' do
+      user = client.users.list.find do |u|
+        u['name'] == 'test'
+      end
+      expect(user['password']).to be_nil
+      user_after_change = client.users.update_user(user_id: user['id'], site_role: 'Viewer', password: 'new_password')
+      expect(user_after_change['password']).to eq('new_password')
+    end
+
+    it 'can change the email of a user in a site' do
+      user = client.users.list.find do |u|
+        u['name'] == 'test'
+      end
+      expect(user['email']).to be_nil
+      user_after_change = client.users.update_user(user_id: user['id'], site_role: 'Viewer', email: 'user@example.com')
+      expect(user_after_change['email']).to eq('user@example.com')
+    end
+
     it 'raises an error if the site role is not valid' do
       user = client.users.list.find do |u|
         u['name'] == 'test'

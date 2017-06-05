@@ -28,7 +28,7 @@ module TableauApi
         @client.connection.api_get_collection(url, 'users.user')
       end
 
-      def update_user(user_id:, site_role:)
+      def update_user(user_id:, site_role:, password: nil, email: nil)
         raise 'invalid site_role' unless SITE_ROLES.include? site_role
 
         res = @client.connection.api_get("sites/#{@client.auth.site_id}/users/#{user_id}")
@@ -37,7 +37,11 @@ module TableauApi
         user = res['tsResponse']['user']
 
         request = Builder::XmlMarkup.new.tsRequest do |ts|
-          ts.user(name: user['name'], siteRole: site_role)
+          user_params = { name: user['name'], siteRole: site_role }
+          user_params[:password] = password if password
+          user_params[:email] = email if email
+
+          ts.user(user_params)
         end
 
         res = @client.connection.api_put("sites/#{@client.auth.site_id}/users/#{user_id}", body: request)

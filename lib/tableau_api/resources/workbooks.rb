@@ -131,6 +131,11 @@ module TableauApi
         @client.connection.api_get_collection(url, 'workbooks.workbook')
       end
 
+      def list_by_user_id(user_id)
+        url = "sites/#{@client.auth.site_id}/users/#{user_id}/workbooks"
+        @client.connection.api_get_collection(url, 'workbooks.workbook')
+      end
+
       private
 
       def permissions_request(workbook_id, user_id, group_id, capabilities)

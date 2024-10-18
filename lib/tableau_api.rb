@@ -17,7 +17,7 @@ require 'tableau_api/version'
 module TableauApi
   class << self
     def new(options = {})
-      Client.new(options)
+      Client.new(**options)
     end
   end
 end
